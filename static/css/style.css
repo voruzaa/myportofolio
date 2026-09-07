@@ -5,25 +5,27 @@
 }
 
 :root {
-    --ink: #1c1917;
-    --paper: #faf6f0;
-    --accent: #d95d39;
-    --accent-dark: #a8442a;
-    --line: #e3d9c9;
-    --text-muted: #6b6459;
+    --ink: #000000;
+    --paper: #FCFCFB;
+    --accent: #EDECE8;
+    --accent-dark: #000000;
+    --line: #D7D7D5;
+    --text-muted: #000000;
     --radius: 4px;
 }
 
 body {
-    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    font-family: "Source Serif 4", serif;
     color: var(--ink);
     background-color: var(--paper);
     line-height: 1.6;
 }
 
 h1,
+h2,
 .brand {
-    font-family: "Space Grotesk", -apple-system, sans-serif;
+    font-family: "Source Serif 4", serif;
 }
 
 .container {
@@ -33,21 +35,29 @@ h1,
 }
 
 .site-header {
-    border-bottom: 1px solid var(--line);
+    padding: 1rem 0;
 }
 
 .site-header .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.25rem 1.5rem;
+    padding: 0.75rem 1.75rem;
+    background-color: rgba(255, 255, 255, 0.65);
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
 .brand {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-weight: 700;
-    color: var(--ink);
+    color: #000000;
     text-decoration: none;
+}
+
+.brand:hover {
+    opacity: 0.85;
 }
 
 .site-header nav {
@@ -56,9 +66,15 @@ h1,
 }
 
 .site-header nav a {
-    color: var(--ink);
+    color: #000000;
     text-decoration: none;
     font-size: 0.95rem;
+    font-weight: 600;
+    transition: opacity 0.2s ease;
+}
+
+.site-header nav a:hover {
+    opacity: 0.75;
 }
 
 .hero {
@@ -122,24 +138,43 @@ h1,
 
 .social-links {
     display: flex;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 0.75rem;
     flex-wrap: wrap;
 }
 
 .social-link {
-    display: inline-block;
-    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 1.25rem;
+    font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
     color: var(--paper);
     background-color: var(--ink);
     border-radius: var(--radius);
-    padding: 0.5rem 1.1rem;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.social-link.icon-only {
+    width: 44px;
+    padding: 0;
+    aspect-ratio: 1 / 1;
 }
 
 .social-link:hover {
-    background-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.social-link svg,
+.social-icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
 }
 
 .hero-photo {
@@ -154,9 +189,10 @@ h1,
     left: 1.25rem;
     width: 100%;
     height: 100%;
-    background-color: var(--accent);
+    background-color: rgba(0, 0, 0, 0.18);
     border-radius: var(--radius);
     z-index: 0;
+    filter: blur(2px);
 }
 
 .avatar {
@@ -168,6 +204,56 @@ h1,
     object-fit: cover;
     border-radius: var(--radius);
     border: 3px solid var(--ink);
+}
+
+.about-me {
+    padding: 1.5rem 0;
+}
+
+.education {
+    padding: 1.5rem 0 3.5rem;
+}
+
+.about-card,
+.education-card {
+    background-color: rgba(255, 255, 255, 0.65);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.about-me h2,
+.education h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--ink);
+}
+
+.about-me p,
+.education-caption {
+    color: var(--text-muted);
+    max-width: 680px;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.education-list {
+    margin-top: 1rem;
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.education-list li {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--ink);
+}
+
+.education-list li strong {
+    font-weight: 700;
 }
 
 .site-footer {
