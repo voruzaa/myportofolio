@@ -7,7 +7,7 @@ def show_main(request):
     context = {
         "name": "Forza",
         "npm": "2506596041",
-        "study_program": "S1 Sistem Informasi",
+        "study_program": "S1 Information Systems",
         "bio": (
             "Mahasiswa Sistem Informasi Universitas Indonesia yang tertarik "
             "pada pengembangan perangkat lunak dan pendidikan."
