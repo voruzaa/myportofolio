@@ -34,7 +34,12 @@
                         <article class="experience-card">
                             <h2>{{ edu.institution }}</h2>
                             <p class="experience-category">{{ edu.degree }}</p>
-                            <p class="experience-description">{{ edu.description }}</p>
+                            <p class="experience-description">
+                                {{ edu.started_at|date:"Y" }}-{% if edu.is_ongoing %}Present{% else %}{{ edu.ended_at|date:"Y" }}{% endif %}
+                            </p>
+                            {% if edu.description %}
+                                <p class="experience-description">{{ edu.description }}</p>
+                            {% endif %}
                             {% if edu.is_ongoing %}
                                 <p class="experience-status">Ongoing</p>
                             {% else %}
