@@ -4,13 +4,10 @@ from main.models import Experience, Education
 
 def show_main(request):
     context = {
-        "name": "Forza",
+        "name": "Forza Derian",
         "npm": "2506596041",
         "study_program": "S1 Information Systems",
-        "bio": (
-            "Information Systems student at Universitas Indonesia with an interest "
-            "in software development and education."
-        ),
+        "bio": "Undergraduate Information Systems Student at Faculty of Computer Science, Universitas Indonesia.",
     }
     return render(request, "index.html", context)
 
