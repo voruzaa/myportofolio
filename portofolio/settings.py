@@ -18,6 +18,9 @@ load_dotenv()
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "forza-derian-myportofolio.pws.cs.ui.ac.id"]
 
+# gunakan https:// untuk trailing urlnya
+CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1", "https://forza-derian-myportofolio.pws.cs.ui.ac.id"]
+
 PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
 <title>{{ name }} - Portfolio</title>
@@ -14,7 +15,7 @@
                 </div>
                 <div class="hero-photo">
                     <div class="photo-block"></div>
-                    <img class="avatar" src="/static/img/burhan.jpg" alt="Photo of {{ name }}">
+                    <img class="avatar" src="{% static 'img/burhan.jpg' %}" alt="Photo of {{ name }}">
                 </div>
                 <div class="hero-details">
                     <p class="bio">{{ bio }}
@@ -32,15 +33,15 @@
                     <div class="social-links">
                         <a href="https://github.com/voruzaa" class="social-link icon-only" title="GitHub"
                             aria-label="GitHub" target="_blank" rel="noopener noreferrer">
-                            <img src="/static/img/github.webp" alt="GitHub" class="social-icon">
+                            <img src="{% static 'img/github.webp' %}" alt="GitHub" class="social-icon">
                         </a>
                         <a href="https://linkedin.com/in/forza-derian-0a347531b/" class="social-link icon-only"
                             title="LinkedIn" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-                            <img src="/static/img/linkedin.webp" alt="LinkedIn" class="social-icon">
+                            <img src="{% static 'img/linkedin.webp' %}" alt="LinkedIn" class="social-icon">
                         </a>
                         <a href="https://www.instagram.com/za.drnn_" class="social-link icon-only"
                             title="Instagram" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                            <img src="/static/img/instagram.webp" alt="Instagram" class="social-icon">
+                            <img src="{% static 'img/instagram.webp' %}" alt="Instagram" class="social-icon">
                         </a>
                         <a href="mailto:forzaderian@gmail.com" class="social-link email-link"
                             title="Send Email">forzaderian@gmail.com</a>
@@ -66,28 +67,28 @@
                     <h2>Skills</h2>
                     <div class="skills-grid">
                         <div class="skill-box">
-                            <img src="/static/img/python.webp" alt="python.webp">
+                            <img src="{% static 'img/python.webp' %}" alt="python.webp">
                         </div>
                         <div class="skill-box">
-                            <img src="/static/img/java.webp" alt="java.webp">
+                            <img src="{% static 'img/java.webp' %}" alt="java.webp">
                         </div>
                         <div class="skill-box">
-                            <img src="/static/img/html.png" alt="html.png">
+                            <img src="{% static 'img/html.png' %}" alt="html.png">
                         </div>
                         <div class="skill-box">
-                            <img src="/static/img/css.png" alt="css.png">
+                            <img src="{% static 'img/css.png' %}" alt="css.png">
                         </div>
                         <div class="skill-box">
-                            <img src="/static/img/javascript.png" alt="javascript.png">
+                            <img src="{% static 'img/javascript.png' %}" alt="javascript.png">
                         </div>
                         <div class="skill-box">
-                            <img src="/static/img/typescript.png" alt="typescript.png">
+                            <img src="{% static 'img/typescript.png' %}" alt="typescript.png">
                         </div>
                         <div class="skill-box">
-                            <img src="/static/img/git.png" alt="git.png">
+                            <img src="{% static 'img/git.png' %}" alt="git.png">
                         </div>
                         <div class="skill-box">
-                            <img src="/static/img/github.svg" alt="github.svg">
+                            <img src="{% static 'img/github.svg' %}" alt="github.svg">
                         </div>
                     </div>
                 </div>

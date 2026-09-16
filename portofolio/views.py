@@ -22,3 +22,13 @@ def show_experience(request):
         "experience_list": Experience.objects.all(),
     }
     return render(request, "experience.html", context)
+
+def get_projects_json(request):
+    title_query = request.GET.get("title", "").strip()
+    projects = Project.objects.all()
+
+    if title_query:
+        projects = projects.filter(title__icontains=title_query)
+
+    projects_json = serializers.serialize("json", projects)
+    return HttpResponse(projects_json, content_type="application/json")
