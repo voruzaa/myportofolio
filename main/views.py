@@ -3,7 +3,7 @@ from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from main.models import Experience, Education, Project
-from main.forms import ProjectForm
+from main.forms import EducationForm, ProjectForm
 
 
 def show_main(request):
@@ -23,12 +23,79 @@ def show_experience(request):
     }
     return render(request, "experience.html", context)
 
+
+# ──────────────────────────────────────────────
+#  Education – JSON, List, Create, Update, Delete
+# ──────────────────────────────────────────────
+
+def get_education_json(request):
+    education = Education.objects.all().order_by("-started_at")
+    education_json = serializers.serialize("json", education)
+    return HttpResponse(education_json, content_type="application/json")
+
+
 def show_education(request):
+    json_response = get_education_json(request)
+
+    education_deserialized = serializers.deserialize(
+        "json",
+        json_response.content.decode("utf-8"),
+    )
+    education_list = [entry.object for entry in education_deserialized]
+
     context = {
         "name": "Forza",
-        "education_list": Education.objects.all().order_by("-started_at"),
+        "education_list": education_list,
     }
     return render(request, "education.html", context)
+
+
+def create_education(request):
+    form = EducationForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Data pendidikan berhasil ditambahkan!")
+        return redirect("main:show_education")
+
+    context = {
+        "name": "Forza",
+        "form": form,
+    }
+    return render(request, "education_form.html", context)
+
+
+def update_education(request, education_id):
+    education = get_object_or_404(Education, pk=education_id)
+    form = EducationForm(request.POST or None, instance=education)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Data pendidikan berhasil diperbarui!")
+        return redirect("main:show_education")
+
+    context = {
+        "name": "Forza",
+        "form": form,
+        "education": education,
+    }
+    return render(request, "education_form.html", context)
+
+
+def delete_education(request, education_id):
+    education = get_object_or_404(Education, pk=education_id)
+
+    if request.method == "POST":
+        education.delete()
+        messages.success(request, "Data pendidikan berhasil dihapus!")
+        return redirect("main:show_education")
+
+    return redirect("main:show_education")
+
+
+# ──────────────────────────────────────────────
+#  Project – JSON, List, Create, Delete
+# ──────────────────────────────────────────────
 
 def get_projects_json(request):
     title_query = request.GET.get("title", "").strip()
@@ -70,6 +137,23 @@ def create_project(request):
     context = {
         "name": "Forza",
         "form": form,
+    }
+    return render(request, "projects_form.html", context)
+
+
+def update_project(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    form = ProjectForm(request.POST or None, instance=project)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Proyek berhasil diperbarui!")
+        return redirect("main:show_projects")
+
+    context = {
+        "name": "Forza",
+        "form": form,
+        "project": project,
     }
     return render(request, "projects_form.html", context)
 

@@ -9,7 +9,14 @@
         <section class="experience-section" id="education">
             <div class="container">
                 <p class="section-kicker">Academic background</p>
-                <h1>Education</h1>
+                <div class="project-header">
+                    <h1>Education</h1>
+                    <a href="{% url 'main:create_education' %}"
+                       class="button project-add-button">
+                        <span aria-hidden="true">+</span>
+                        Tambah Education
+                    </a>
+                </div>
 
                 <div class="experience-grid">
                     {% for edu in education_list %}
@@ -27,6 +34,12 @@
                             {% else %}
                                 <p class="experience-status">Completed</p>
                             {% endif %}
+                            <div class="project-card-actions">
+                                <div class="project-actions">
+                                    <a href="{% url 'main:update_education' edu.id %}" class="button">Edit</a>
+                                    {% include "components/education_delete_modal.html" with edu=edu %}
+                                </div>
+                            </div>
                         </article>
                     {% empty %}
                         <p class="empty-state">No education history yet.</p>

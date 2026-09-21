@@ -2,7 +2,7 @@ Nama : Forza Derian
 NPM : 2506596041
 Kelas : PBP F
 
-Pertanyaan Reflektif (Tugas 1):
+## Pertanyaan Reflektif (Tugas 1):
 
 1. Pada Tutorial dan Tugas 1, Anda diberi kebebasan untuk menentukan tampilan dari website portofolio Anda. Saat Anda merancang struktur HTML yang digunakan, apakah Anda menggunakan elemen semantik HTML5 seperti <section>, <article>, atau <aside>? Jika iya, bagaimana elemen tersebut membantu Anda dalam membuat static web? Jika tidak, mengapa tanpa elemen tersebut sudah memenuhi kebutuhan desain Anda?
    Jawaban: Ya, saya menggunakan berbagai elemen semantik HTML5 seperti <header> <nav> <main> <section> dan <footer>, serta elemen semantik pendukung lainnya seperti <dl> <dt> <dd> dan <ol>.
@@ -21,7 +21,7 @@ Pertanyaan Reflektif (Tugas 1):
 AI DISCLOSURE TUGAS 1:
 Tugas ini dikerjakan menggunakan bantuan Gemini AI dalam berbagai aspek, seperti penambahan elemen yang bersifat repetitif, merapikan layout CSS, dan juga untuk bertanya mengenai kode saya.
 
-Pertanyaan Reflektif (Tugas 2):
+## Pertanyaan Reflektif (Tugas 2):
 
 1. Jelaskan alur yang terjadi ketika pengguna membuka halaman portofolio baru, mulai dari permintaan yang diterima proyek hingga data ditampilkan pada browser. Dalam jawabanmu, jelaskan peran urls.py proyek, urls.py aplikasi, view, model, dan template.
    Jawaban: Browser mengirim HTTP request ke Django, lalu urls.py proyek meneruskannya ke urls.py aplikasi main yang mencocokkan pola URL dengan view yang sesuai. View memanggil model untuk mengambil data dari database, memasukkannya ke context, lalu merender template HTML yang akhirnya dikembalikan sebagai HTTP response ke browser.
@@ -37,3 +37,19 @@ Tugas ini dikerjakan menggunakan bantuan Gemini AI untuk membantu tahapan implem
 
 DOKUMENTASI TUGAS 2:
 Pada Tugas 2, ditambahkan halaman Education sebagai bagian portofolio baru menggunakan MVT Django. Model Education didefinisikan di models.py dengan field institution, degree, description, started_at, dan ended_at, lalu dimigrasikan ke database. View show_education mengambil seluruh data Education dari database dan meneruskannya ke template education.html yang menampilkan setiap entri sebagai kartu menggunakan Django Template Language. Halaman ini dapat diakses melalui URL /education/ dan terhubung ke navbar di seluruh halaman portofolio.
+
+## Tugas 3
+1. Jelaskan mengapa kita menggunakan ModelForm pada Django alih-alih membuat form HTML secara manual. Selain itu, jelaskan pula mengapa kita diwajibkan menambahkan {% csrf_token %} pada form tersebut!
+   Jawaban: ModelForm digunakan karena secara otomatis menghasilkan form, memvalidasi input, dan menyimpan data langsung sesuai skema model tanpa perlu menulis kode HTML maupun logika validasi berulang secara manual. Sementara itu, `{% csrf_token %}` wajib disertakan untuk melindungi aplikasi dari serangan *Cross-Site Request Forgery* (CSRF) dengan memastikan bahwa permintaan POST benar-benar berasal dari pengguna sah pada form aplikasi kita.
+
+2. Pada Tutorial 03, kita membahas format data JSON dan XML. Mengapa JSON lebih disukai dalam pengembangan aplikasi web modern dibandingkan XML?
+   Jawaban: JSON lebih disukai karena sintaksnya jauh lebih ringkas dan ringan dibandingkan XML yang redundan dengan tag pembuka-penutup, sehingga lebih hemat bandwidth dan cepat ditransmisikan. Selain itu, JSON didukung secara *native* oleh JavaScript sehingga dapat langsung di-parse menjadi objek tanpa memerlukan parser XML eksternal yang rumit.
+
+3. Jelaskan alur yang terjadi saat kamu menggunakan fungsi view untuk mengembalikan data portofoliomu dalam bentuk JSON. Mengapa kita perlu melakukan proses serialization pada model Django sebelum datanya dikembalikan?
+   Jawaban: Alurnya dimulai saat fungsi view mengambil QuerySet data dari database, mengubahnya ke format string JSON menggunakan `serializers.serialize()`, lalu mengembalikannya melalui `HttpResponse` dengan `content_type="application/json"`. Proses *serialization* wajib dilakukan karena QuerySet model Django adalah objek Python kompleks yang tidak dapat langsung dikirim melalui HTTP sebelum diubah ke format teks standar seperti JSON.
+
+AI DISCLOSURE:
+Tugas ini dikerjakan menggunakan bantuan Gemini AI untuk membantu pembuatan ModelForm, implementasi operasi CRUD serta serialisasi data JSON, dan penyusunan jawaban reflektif.
+
+DOKUMENTASI:
+Pada Tugas 3, diimplementasikan formulir dan pengelolaan data dinamis menggunakan `ModelForm` untuk entitas `Education` dan `Project`. Dibuat fitur CRUD lengkap (Create, Read, Update, Delete) beserta proteksi token CSRF dan flash messages untuk memberi umpan balik bagi pengguna. Selain itu, ditambahkan endpoint serialisasi JSON untuk menyajikan data portofolio secara terstruktur serta pemanfaatan deserialisasi data sebelum ditampilkan ke template HTML.
