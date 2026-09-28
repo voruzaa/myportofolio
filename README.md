@@ -54,3 +54,11 @@ Pada Tugas 2, ditambahkan halaman Education sebagai bagian portofolio baru mengg
 AI DISCLOSURE: Tugas ini dikerjakan mengguakan bantuan Gemini AI untuk membantu pembuatan ModelForm, implementasi operasi CRUD serta serialisasi data JSON.
 
 DOKUMENTASI: Pada Tugas 3, diimplementasikan formulir dan pengelolaan data dinamis menggunakan ModelForm untuk entitas Education dan Project. Dibuat fitur CRUD lengkap (Create, Read, Update, Delete) beserta proteksi token CSRF dan flash messages untuk memberi umpan balik bagi pengguna. Selain itu, ditambahkan endpoint serialisasi JSON untuk menyajikan data portofolio secara terstruktur serta pemanfaatan deserialisasi data sebelum ditampilkan ke template HTML.
+
+## Tugas 4
+AI DISCLOSURE: Tugas ini dikerjakan dengan bantuan Claude AI untuk membantu 
+implementasi sistem autentikasi dan otorisasi brbasis peran: pembuatan helper `_is_editor()`, 
+penambahan `@login_required` dan `PermissionDenied` pada view CRUD, serta penyesuaian 
+template agar tombol hanya tampil sesuai hak akses.
+
+DOKUMENTASI: Pada Tugas 4, diterapkan sistem autentikasi dan otorisasi berbasis peran menggunakan Django Group. Ada 4 peran dengan hak akses berbeda: pengunjung: hanya dapat membaca, pengguna biasa: dapat memberikan star, Editor: dapat mengubah data, dan superuser: memiliki akses penuh CRUD. Selain itu, endpoint JSON dijaga agar tidak membocorkan data sensitif seperti informasi starred_by

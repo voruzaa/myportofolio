@@ -11,11 +11,13 @@
                 <p class="section-kicker">Academic background</p>
                 <div class="project-header">
                     <h1>Education</h1>
-                    <a href="{% url 'main:create_education' %}"
-                       class="button project-add-button">
-                        <span aria-hidden="true">+</span>
-                        Tambah Education
-                    </a>
+                    {% if can_create %}
+                        <a href="{% url 'main:create_education' %}"
+                           class="button project-add-button">
+                            <span aria-hidden="true">+</span>
+                            Tambah Education
+                        </a>
+                    {% endif %}
                 </div>
 
                 <div class="experience-grid">
@@ -36,8 +38,12 @@
                             {% endif %}
                             <div class="project-card-actions">
                                 <div class="project-actions">
-                                    <a href="{% url 'main:update_education' edu.id %}" class="button">Edit</a>
-                                    {% include "components/education_delete_modal.html" with edu=edu %}
+                                    {% if can_edit %}
+                                        <a href="{% url 'main:update_education' edu.id %}" class="button">Edit</a>
+                                    {% endif %}
+                                    {% if can_delete %}
+                                        {% include "components/education_delete_modal.html" with edu=edu %}
+                                    {% endif %}
                                 </div>
                             </div>
                         </article>
