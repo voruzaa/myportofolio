@@ -40,16 +40,17 @@ Pada Tugas 2, ditambahkan halaman Education sebagai bagian portofolio baru mengg
 
 ## Tugas 3
 1. Jelaskan mengapa kita menggunakan ModelForm pada Django alih-alih membuat form HTML secara manual. Selain itu, jelaskan pula mengapa kita diwajibkan menambahkan {% csrf_token %} pada form tersebut!
-   Jawaban: ModelForm digunakan karena secara otomatis menghasilkan form, memvalidasi input, dan menyimpan data langsung sesuai skema model tanpa perlu menulis kode HTML maupun logika validasi berulang secara manual. Sementara itu, `{% csrf_token %}` wajib disertakan untuk melindungi aplikasi dari serangan *Cross-Site Request Forgery* (CSRF) dengan memastikan bahwa permintaan POST benar-benar berasal dari pengguna sah pada form aplikasi kita.
+   Jawaban: ModelForm digunakan karena secara otomatis menghasilkan form, memvalidasi input, dan menyimpan data langsung sesuai skema model tanpa perlu menulis kode HTML atau logika validasi berulang secara manual. Sementara itu, {% csrf_token %} wajib disertakan untuk melindungi aplikasi dari serangan Cross-Site Request Forgery (CSRF) dengan memastikan bahwa permintaan POST benar-benar berasal dari pengguna sah pada form aplikasi kita.
+
 
 2. Pada Tutorial 03, kita membahas format data JSON dan XML. Mengapa JSON lebih disukai dalam pengembangan aplikasi web modern dibandingkan XML?
-   Jawaban: JSON lebih disukai karena sintaksnya jauh lebih ringkas dan ringan dibandingkan XML yang redundan dengan tag pembuka-penutup, sehingga lebih hemat bandwidth dan cepat ditransmisikan. Selain itu, JSON didukung secara *native* oleh JavaScript sehingga dapat langsung di-parse menjadi objek tanpa memerlukan parser XML eksternal yang rumit.
+   Jawaban: JSON lebih disukai karena sintaksnya jauh lebih ringkas dan ringan dibandingkan XML yang redundan dengan tag pembuka penutup, sehingga lebih hemat bandwidth dan cepat ditransmisikan. Selain itu, JSON didukung secara native oleh JavaScript sehingga dapat langsumg di-parse menjadi objek tanpa memerlukan parser XML eksternal yang rumit.
+
 
 3. Jelaskan alur yang terjadi saat kamu menggunakan fungsi view untuk mengembalikan data portofoliomu dalam bentuk JSON. Mengapa kita perlu melakukan proses serialization pada model Django sebelum datanya dikembalikan?
-   Jawaban: Alurnya dimulai saat fungsi view mengambil QuerySet data dari database, mengubahnya ke format string JSON menggunakan `serializers.serialize()`, lalu mengembalikannya melalui `HttpResponse` dengan `content_type="application/json"`. Proses *serialization* wajib dilakukan karena QuerySet model Django adalah objek Python kompleks yang tidak dapat langsung dikirim melalui HTTP sebelum diubah ke format teks standar seperti JSON.
+   Jawaban: Alurnya dimulai saat fungsi view mengambil QuerySet data dari database, mengubahnya ke format string JSON menggunakan serializers.serialize(), lalu mengembalikannya melalui HttpResponse dengan content_type="application/json". Proses serialization perlu dilakukan karena QuerySet model Django adalah objek Python kompleks yang tidak dapat langsung dikirim melalui HTTP sebelum diubah ke format teks standar seperti JSON.
 
-AI DISCLOSURE:
-Tugas ini dikerjakan menggunakan bantuan Gemini AI untuk membantu pembuatan ModelForm, implementasi operasi CRUD serta serialisasi data JSON, dan penyusunan jawaban reflektif.
 
-DOKUMENTASI:
-Pada Tugas 3, diimplementasikan formulir dan pengelolaan data dinamis menggunakan `ModelForm` untuk entitas `Education` dan `Project`. Dibuat fitur CRUD lengkap (Create, Read, Update, Delete) beserta proteksi token CSRF dan flash messages untuk memberi umpan balik bagi pengguna. Selain itu, ditambahkan endpoint serialisasi JSON untuk menyajikan data portofolio secara terstruktur serta pemanfaatan deserialisasi data sebelum ditampilkan ke template HTML.
+AI DISCLOSURE: Tugas ini dikerjakan mengguakan bantuan Gemini AI untuk membantu pembuatan ModelForm, implementasi operasi CRUD serta serialisasi data JSON.
+
+DOKUMENTASI: Pada Tugas 3, diimplementasikan formulir dan pengelolaan data dinamis menggunakan ModelForm untuk entitas Education dan Project. Dibuat fitur CRUD lengkap (Create, Read, Update, Delete) beserta proteksi token CSRF dan flash messages untuk memberi umpan balik bagi pengguna. Selain itu, ditambahkan endpoint serialisasi JSON untuk menyajikan data portofolio secara terstruktur serta pemanfaatan deserialisasi data sebelum ditampilkan ke template HTML.
