@@ -1,8 +1,35 @@
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 from django.utils import timezone
 
 from main.models import Experience, Education
+from main.forms import ProjectForm
+
+
+class ProjectFormTest(SimpleTestCase):
+    def test_html_tags_are_removed_and_text_is_trimmed(self):
+        form = ProjectForm(data={
+            "title": '  <img src=x onerror="alert(1)"><b>Portfolio</b>  ',
+            "tech_stack": "  <em>Django</em> & Python  ",
+            "description": "  <p>Proyek <strong>pribadi</strong>.</p>  ",
+        })
+
+        self.assertTrue(form.is_valid(), form.errors)
+        self.assertEqual(form.cleaned_data["title"], "Portfolio")
+        self.assertEqual(form.cleaned_data["tech_stack"], "Django & Python")
+        self.assertEqual(form.cleaned_data["description"], "Proyek pribadi.")
+
+    def test_title_containing_only_html_tags_is_rejected(self):
+        form = ProjectForm(data={
+            "title": ' <img src=x onerror="alert(1)"> ',
+            "tech_stack": "Django",
+            "description": "Proyek pribadi.",
+        })
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors["title"], [
+            "Nama proyek tidak boleh hanya berisi tag HTML.",
+        ])
 
 
 class MainTest(TestCase):
