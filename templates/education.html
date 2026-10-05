@@ -1,56 +1,89 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
 <title>Education - {{ name }}</title>
+<script src="{% static 'js/education.js' %}" defer></script>
 {% endblock meta %}
 
 {% block content %}
     <main>
-        <section class="experience-section" id="education">
+        <section class="experience-section" id="education"
+                 data-endpoint="{% url 'main:get_education_json' %}"
+                 data-edit-url="{% url 'main:update_education' '00000000-0000-0000-0000-000000000000' %}"
+                 data-delete-url="{% url 'main:delete_education' '00000000-0000-0000-0000-000000000000' %}"
+                 data-star-url="{% url 'main:toggle_education_star' '00000000-0000-0000-0000-000000000000' %}">
             <div class="container">
                 <p class="section-kicker">Academic background</p>
                 <div class="project-header">
                     <h1>Education</h1>
                     {% if can_create %}
-                        <a href="{% url 'main:create_education' %}"
-                           class="button project-add-button">
+                        <button type="button" popovertarget="add-education-modal"
+                                class="button project-add-button">
                             <span aria-hidden="true">+</span>
                             Tambah Education
-                        </a>
+                        </button>
                     {% endif %}
                 </div>
 
-                <div class="experience-grid">
-                    {% for edu in education_list %}
+                <form id="education-search-form" class="project-search" role="search">
+                    <input type="search" id="education-search-input" name="institution"
+                           placeholder="Cari berdasarkan institusi..." aria-label="Cari pendidikan berdasarkan institusi"
+                           class="project-search__input">
+                    <button type="submit" class="button">Cari</button>
+                </form>
+
+                <p id="education-loading" class="empty-state" role="status">Memuat data pendidikan...</p>
+                <p id="education-empty" class="empty-state" role="status" hidden>No education history yet.</p>
+                <div id="education-error" class="empty-state" role="alert" hidden>
+                    <p>Gagal memuat data pendidikan.</p>
+                    <button id="education-retry" type="button" class="button">Coba lagi</button>
+                </div>
+                <div id="education-grid" class="experience-grid" aria-busy="true" hidden></div>
+
+                <template id="education-card-template">
                         <article class="experience-card">
-                            <h2>{{ edu.institution }}</h2>
-                            <p class="experience-category">{{ edu.degree }}</p>
-                            <p class="experience-description">
-                                {{ edu.started_at|date:"Y" }}-{% if edu.is_ongoing %}Present{% else %}{{ edu.ended_at|date:"Y" }}{% endif %}
-                            </p>
-                            {% if edu.description %}
-                                <p class="experience-description">{{ edu.description }}</p>
-                            {% endif %}
-                            {% if edu.is_ongoing %}
-                                <p class="experience-status">Ongoing</p>
-                            {% else %}
-                                <p class="experience-status">Completed</p>
-                            {% endif %}
+                            <h2 data-field="institution"></h2>
+                            <p class="experience-category" data-field="degree"></p>
+                            <p class="experience-description" data-field="period"></p>
+                            <p class="experience-description" data-field="description"></p>
+                            <p class="experience-status" data-field="status"></p>
                             <div class="project-card-actions">
                                 <div class="project-actions">
                                     {% if can_edit %}
-                                        <a href="{% url 'main:update_education' edu.id %}" class="button">Edit</a>
+                                        <a data-action="edit" class="button">Edit</a>
                                     {% endif %}
                                     {% if can_delete %}
-                                        {% include "components/education_delete_modal.html" with edu=edu %}
+                                        <button data-action="delete" type="button" class="button button-danger"
+                                                popovertarget="delete-education-modal">Hapus</button>
                                     {% endif %}
                                 </div>
+                                {% if user.is_authenticated %}
+                                    <form method="post" data-action="star" class="star-form">
+                                        {% csrf_token %}
+                                        <button type="submit" class="button button-star">
+                                            <span aria-hidden="true">★</span>
+                                            <span data-field="star-label"></span>
+                                            <span class="star-count" data-field="star-count"></span>
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <p class="experience-status">
+                                        <span aria-hidden="true">★</span>
+                                        <span data-field="star-count"></span> star
+                                        · <a href="{% url 'main:login' %}">Login untuk memberi star</a>
+                                    </p>
+                                {% endif %}
                             </div>
                         </article>
-                    {% empty %}
-                        <p class="empty-state">No education history yet.</p>
-                    {% endfor %}
-                </div>
+                </template>
+                {% if can_create %}
+                    {% include 'components/education_form_modal.html' %}
+                {% endif %}
+                {% if can_delete %}
+                    {% include 'components/education_delete_modal.html' %}
+                {% endif %}
+                <noscript><p class="empty-state">Aktifkan JavaScript untuk memuat data pendidikan.</p></noscript>
             </div>
         </section>
     </main>

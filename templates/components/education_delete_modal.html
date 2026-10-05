@@ -1,40 +1,31 @@
-<p class="experience-status">
-    <button type="button"
-            class="button button-danger"
-            popovertarget="delete-education-{{ edu.id }}"
-            aria-label="Hapus {{ edu.institution }}"
-            title="Hapus data pendidikan">
-        Hapus
-    </button>
-</p>
-<div id="delete-education-{{ edu.id }}"
+<div id="delete-education-modal"
      class="project-delete-modal"
      popover="auto"
      role="dialog"
      aria-modal="true"
-     aria-labelledby="delete-education-title-{{ edu.id }}">
+     aria-labelledby="delete-education-title">
     <button type="button"
             class="project-delete-modal__backdrop"
-            popovertarget="delete-education-{{ edu.id }}"
+            popovertarget="delete-education-modal"
             popovertargetaction="hide"
             aria-label="Tutup konfirmasi hapus"></button>
     <div class="project-delete-modal__content">
         <button type="button"
                 class="project-delete-modal__close"
-                popovertarget="delete-education-{{ edu.id }}"
+                popovertarget="delete-education-modal"
                 popovertargetaction="hide"
                 aria-label="Tutup konfirmasi hapus">×</button>
-        <h2 id="delete-education-title-{{ edu.id }}">Hapus Data Pendidikan?</h2>
+        <h2 id="delete-education-title">Hapus Data Pendidikan?</h2>
         <p>
             Apakah Anda yakin ingin menghapus
-            <strong>{{ edu.degree }} - {{ edu.institution }}</strong>?
+            <strong id="delete-education-name"></strong>?
         </p>
         <div class="project-delete-modal__actions">
             <button type="button"
                     class="button button-secondary"
-                    popovertarget="delete-education-{{ edu.id }}"
+                    popovertarget="delete-education-modal"
                     popovertargetaction="hide">Batal</button>
-            <form method="post" action="{% url 'main:delete_education' edu.id %}">
+            <form id="delete-education-form" method="post">
                 {% csrf_token %}
                 <button type="submit" class="button button-danger">Ya, Hapus</button>
             </form>

@@ -2,8 +2,7 @@ import datetime
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.core import serializers
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from main.models import Experience, Education, Project
 from main.forms import EducationForm, ProjectForm
@@ -105,23 +104,39 @@ def show_experience(request):
 # ──────────────────────────────────────────────
 
 def get_education_json(request):
-    education = Education.objects.all().order_by("-started_at")
-    education_json = serializers.serialize("json", education)
-    return HttpResponse(education_json, content_type="application/json")
+    institution_query = request.GET.get("institution", "").strip()
+    education_list = (
+        Education.objects.prefetch_related("starred_by").order_by("-started_at")
+    )
+    if institution_query:
+        education_list = education_list.filter(institution__icontains=institution_query)
+    data = []
+    for education in education_list:
+        starred_users = list(education.starred_by.all())
+        data.append({
+            "pk": str(education.id),
+            "fields": {
+                "institution": education.institution,
+                "degree": education.degree,
+                "description": education.description,
+                "started_at": education.started_at.isoformat(),
+                "ended_at": (
+                    education.ended_at.isoformat() if education.ended_at else None
+                ),
+                "is_ongoing": education.is_ongoing,
+                "star_count": len(starred_users),
+                "is_starred": (
+                    request.user.is_authenticated and request.user in starred_users
+                ),
+            },
+        })
+    return JsonResponse(data, safe=False)
 
 
 def show_education(request):
-    json_response = get_education_json(request)
-
-    education_deserialized = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
-    education_list = [entry.object for entry in education_deserialized]
-
     context = {
         "name": "Forza",
-        "education_list": education_list,
+        "form": EducationForm(),
         **_role_context(request.user),
     }
     return render(request, "education.html", context)
@@ -144,6 +159,25 @@ def create_education(request):
         "form": form,
     }
     return render(request, "education_form.html", context)
+
+
+@require_POST
+def create_education_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Hanya pemilik portofolio yang dapat menambahkan pendidikan."},
+            status=403,
+        )
+
+    form = EducationForm(request.POST)
+    if form.is_valid():
+        education = form.save()
+        return JsonResponse(
+            {"message": "Data pendidikan berhasil ditambahkan.", "pk": str(education.pk)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
 
 
 @login_required(login_url="/login/")
@@ -182,12 +216,21 @@ def delete_education(request, education_id):
     return redirect("main:show_education")
 
 
+@login_required(login_url="/login/")
+@require_POST
+def toggle_education_star(request, education_id):
+    education = get_object_or_404(Education, pk=education_id)
+    if education.starred_by.filter(pk=request.user.pk).exists():
+        education.starred_by.remove(request.user)
+    else:
+        education.starred_by.add(request.user)
+    return redirect("main:show_education")
+
+
 # ──────────────────────────────────────────────
 #  Project – JSON, List, Create, Update, Delete
 # ──────────────────────────────────────────────
 
-
-from django.http import JsonResponse
 
 def get_projects_json(request):
     title_query = request.GET.get("title", "").strip()

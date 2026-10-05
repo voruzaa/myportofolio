@@ -12,12 +12,14 @@ from main.views import (
     delete_project,
     get_education_json,
     create_education,
+    create_education_ajax,
     update_education,
     delete_education,
     register,
     login_user,
     logout_user,
     toggle_star,
+    toggle_education_star,
 )
 
 app_name = "main"
@@ -40,8 +42,10 @@ urlpatterns = [
     path("api/education/", get_education_json, name="get_education_json"),
     path("education/", show_education, name="show_education"),
     path("education/add/", create_education, name="create_education"),
+    path("education/add-ajax/", create_education_ajax, name="create_education_ajax"),
     path("education/<uuid:education_id>/edit/", update_education, name="update_education"),
     path("education/<uuid:education_id>/delete/", delete_education, name="delete_education"),
+    path("education/<uuid:education_id>/star/", toggle_education_star, name="toggle_education_star"),
     # Experience
     path("experience/", show_experience, name="show_experience"),
 ]

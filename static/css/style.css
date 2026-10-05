@@ -544,6 +544,11 @@ h2,
     display: none !important;
 }
 
+/* Keep AJAX states hidden even when a component uses display: grid or flex. */
+#education [hidden] {
+    display: none !important;
+}
+
 .project-actions .experience-status {
     margin-top: 0;
 }
