@@ -65,18 +65,18 @@ DOKUMENTASI: Pada Tugas 4, diterapkan sistem autentikasi dan otorisasi berbasis 
 
 ### Tugas 5
 
-AI DISCLOSURE: Tugas ini menggunakan bantuan Codex untuk mengecek kesesuaian dengan ketentuan tugas, mengimplementasikan pencarian AJAX dengan debouncing, modal tambah Education, toast, sanitasi input, serta pengujian backend. Codex juga membantu menyusun jawaban reflektif pada README.
+AI DISCLOSURE: Tugas ini menggunakan bantuan Codex untuk mengecek kesesuaian dengan ketentuan implementasi pada tugas, mengimplementasikan pencarian AJAX dengan debouncing, modal tambah Education, toast, sanitasi input, dan pengujian backend.
 
 1. Jelaskan apa itu debouncing dan mengapa teknik ini penting diterapkan pada fitur pencarian yang menggunakan AJAX!
-
-   Jawaban: Debouncing menunda pencarian hingga pengguna berhenti mengetik selama waktu tertentu, misalnya 300 ms. Teknik ini mengurangi permintaan AJAX yang berlebihan sehingga beban server lebih ringan dan pencarian lebih efisien.
+   Jawaban: Debouncing menunda pencarian hingga pengguna berhenti mengetik selama waktu tertentu. Ini mengurangi permintaan AJAX yang berlebihan sehingga beban server lebih ringan.
 
 2. Jelaskan fungsi dari penggunaan await ketika kita menggunakan fetch()! Apa yang akan terjadi jika kita tidak menggunakan await?
-
-   Jawaban: `await` menunggu Promise dari `fetch()` selesai sebelum kode berikutnya dalam fungsi async dijalankan, tanpa memblokir seluruh halaman. Tanpa `await` atau penanganan melalui `.then()`, hasilnya masih berupa Promise, sehingga respons belum bisa langsung dibaca melalui `response.json()`.
+   Jawaban: await menunggu Promise dari fetch() selesai sebelum kode berikutnya dalam fungsi async dijalankan, tanpa memblokir seluruh halaman. Tanpa await atau penanganan melalui .then(), hasilnya masih berupa Promise, sehingga respons belum bisa langsung dibaca melalui response.json().
 
 3. Jelaskan apa itu serangan XSS (Cross-Site Scripting) dan mengapa data yang ditampilkan melalui AJAX/JavaScript lebih rentan terhadap serangan ini daripada data yang ditampilkan langsung melalui template Django!
+   Jawaban: XSS adalah serangan yang menyisipkan script berbahaya agar dijalankan di browser pengguna. Template Django secara default melakukan escaping, sedangkan data AJAX yang dimasukkan melalui innerHTML tidak otoatis di-escape sehingga lebih berisiko jika dibiarkan. Oleh karena itu, teks ditampilkan melalui textContent dan input dibersihkan di server menggunakan strip_tags.
 
-   Jawaban: XSS adalah serangan yang menyisipkan skrip berbahaya agar dijalankan di browser pengguna. Template Django secara default melakukan escaping, sedangkan data AJAX yang dimasukkan melalui `innerHTML` tidak otomatis di-escape sehingga lebih berisiko jika tidak ditangani. Karena itu, teks ditampilkan melalui `textContent` dan input dibersihkan di server menggunakan `strip_tags`.
+DOKUMENTASI: Pada Tugas 5, halaman Education memuat data beserta informasi star melalui AJAX, dilengkapi pencarian berdasarkan institusi dengan debouncing 300 ms serta tampilan loading, kosong, dan error. Superuser dapat menambahkan pendidikan melalui modal menggunakan AJAX tanpa reload halaman, dengan validasi ModelForm, proteksi CSRF, dan notifikasi toast. Perlindungan XSS diterapkan melalui textContent di sisi JavaScript dan strip_tags pada field teks di sisi server.
+
 
 
