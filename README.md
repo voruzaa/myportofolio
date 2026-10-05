@@ -62,3 +62,21 @@ penambahan `@login_required` dan `PermissionDenied` pada view CRUD, serta penyes
 template agar tombol hanya tampil sesuai hak akses.
 
 DOKUMENTASI: Pada Tugas 4, diterapkan sistem autentikasi dan otorisasi berbasis peran menggunakan Django Group. Ada 4 peran dengan hak akses berbeda: pengunjung: hanya dapat membaca, pengguna biasa: dapat memberikan star, Editor: dapat mengubah data, dan superuser: memiliki akses penuh CRUD. Selain itu, endpoint JSON dijaga agar tidak membocorkan data sensitif seperti informasi starred_by
+
+### Tugas 5
+
+AI DISCLOSURE: Tugas ini menggunakan bantuan Codex untuk mengecek kesesuaian dengan ketentuan tugas, mengimplementasikan pencarian AJAX dengan debouncing, modal tambah Education, toast, sanitasi input, serta pengujian backend. Codex juga membantu menyusun jawaban reflektif pada README.
+
+1. Jelaskan apa itu debouncing dan mengapa teknik ini penting diterapkan pada fitur pencarian yang menggunakan AJAX!
+
+   Jawaban: Debouncing menunda pencarian hingga pengguna berhenti mengetik selama waktu tertentu, misalnya 300 ms. Teknik ini mengurangi permintaan AJAX yang berlebihan sehingga beban server lebih ringan dan pencarian lebih efisien.
+
+2. Jelaskan fungsi dari penggunaan await ketika kita menggunakan fetch()! Apa yang akan terjadi jika kita tidak menggunakan await?
+
+   Jawaban: `await` menunggu Promise dari `fetch()` selesai sebelum kode berikutnya dalam fungsi async dijalankan, tanpa memblokir seluruh halaman. Tanpa `await` atau penanganan melalui `.then()`, hasilnya masih berupa Promise, sehingga respons belum bisa langsung dibaca melalui `response.json()`.
+
+3. Jelaskan apa itu serangan XSS (Cross-Site Scripting) dan mengapa data yang ditampilkan melalui AJAX/JavaScript lebih rentan terhadap serangan ini daripada data yang ditampilkan langsung melalui template Django!
+
+   Jawaban: XSS adalah serangan yang menyisipkan skrip berbahaya agar dijalankan di browser pengguna. Template Django secara default melakukan escaping, sedangkan data AJAX yang dimasukkan melalui `innerHTML` tidak otomatis di-escape sehingga lebih berisiko jika tidak ditangani. Karena itu, teks ditampilkan melalui `textContent` dan input dibersihkan di server menggunakan `strip_tags`.
+
+
