@@ -12,11 +12,12 @@
     --line: #D7D7D5;
     --text-muted: #000000;
     --radius: 4px;
+    --control-radius: 12px;
 }
 
 body {
     min-height: 100vh;
-    font-family: "Source Serif 4", serif;
+    font-family: "Google Sans", sans-serif;
     color: var(--ink);
     background-color: var(--paper);
     line-height: 1.6;
@@ -25,7 +26,7 @@ body {
 h1,
 h2,
 .brand {
-    font-family: "Source Serif 4", serif;
+    font-family: "Google Sans", sans-serif;
 }
 
 .container {
@@ -264,12 +265,14 @@ h2,
 
 .skills-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 180px));
+    justify-content: center;
     gap: 1.25rem;
     margin-top: 1.25rem;
 }
 
 .skill-box {
+    min-width: 0;
     background-color: var(--paper);
     border: 1.5px solid var(--line);
     border-radius: 12px;
@@ -288,8 +291,8 @@ h2,
 }
 
 .skill-box img {
-    max-width: 65%;
-    max-height: 65%;
+    max-width: 45%;
+    max-height: 45%;
     width: auto;
     height: auto;
     object-fit: contain;
@@ -322,16 +325,16 @@ h2,
     }
 
     .skills-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 180px));
         gap: 0.85rem;
     }
 }
 
 @media (min-width: 601px) and (max-width: 850px) {
     .skills-grid {
-        grid-template-columns: repeat(3, 1fr);
         gap: 1rem;
     }
+
 }
 
 .experience-section {
@@ -411,7 +414,7 @@ h2,
     box-sizing: border-box;
     padding: 0.7rem;
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: var(--control-radius);
     font: inherit;
     transition:
         border-color 0.2s ease,
@@ -431,16 +434,19 @@ h2,
 }
 
 .button {
-    display: inline-block;
-    height: fit-content;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
     border: 0;
-    border-radius: var(--radius);
+    border-radius: var(--control-radius);
     padding: 0.65rem 1rem;
     background: var(--ink);
     color: white;
     cursor: pointer;
     font: inherit;
     font-weight: 700;
+    line-height: 1.4;
     text-decoration: none;
 }
 
@@ -471,7 +477,8 @@ h2,
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.project-grid .experience-card {
+.project-grid .experience-card,
+#education-grid .experience-card {
     display: flex;
     flex-direction: column;
 }
@@ -501,6 +508,7 @@ h2,
 
 .project-search {
     display: flex;
+    align-items: stretch;
     gap: 0.75rem;
     margin-bottom: 1.5rem;
 }
@@ -510,7 +518,7 @@ h2,
     min-width: 0;
     padding: 0.7rem;
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: var(--control-radius);
     background: #fff;
     color: var(--ink);
     font: inherit;
@@ -521,15 +529,21 @@ h2,
     border-color: var(--accent);
 }
 
+.project-search .button {
+    flex-shrink: 0;
+}
+
 .project-actions {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 0.75rem;
     margin-top: 1rem;
 }
 
 .project-actions .button {
+    min-height: 40px;
+    padding: 0.55rem 0.85rem;
     font-size: 0.85rem;
     font-weight: 600;
 }
@@ -598,10 +612,7 @@ h2,
 
 .project-delete-modal__content h2 {
     margin: 0 0 0.75rem;
-    font-family:
-        "Space Grotesk",
-        -apple-system,
-        sans-serif;
+    font-family: "Google Sans", sans-serif;
     font-size: 1.5rem;
 }
 
@@ -716,7 +727,7 @@ h2,
 
 .project-form-modal__content h2 {
     margin: 0 2.5rem 1.25rem 0;
-    font-family: "Space Grotesk", -apple-system, sans-serif;
+    font-family: "Google Sans", sans-serif;
     font-size: 1.5rem;
 }
 
@@ -764,7 +775,8 @@ h2,
 }
 
 .star-form {
-    display: inline;
+    display: inline-flex;
+    margin: 0;
 }
 
 .button-star {
@@ -776,13 +788,32 @@ h2,
 
 .button-star.is-starred {
     background: var(--accent);
+    color: var(--ink);
 }
 
 .star-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    min-height: 1.25rem;
     padding: 0.05rem 0.4rem;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.25);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    line-height: 1;
+}
+
+.button-star.is-starred .star-count {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.toast-test-button {
+    position: fixed;
+    left: max(1rem, env(safe-area-inset-left));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: 5;
+    font-size: 0.85rem;
 }
 
 
@@ -822,7 +853,7 @@ h2,
     font-size: 1rem;
     font-weight: 700;
     margin-bottom: 0.15rem;
-    font-family: "Space Grotesk", -apple-system, sans-serif;
+    font-family: "Google Sans", sans-serif;
 }
 
 .toast-message {

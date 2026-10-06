@@ -14,6 +14,13 @@
                 <div class="experience-grid">
                     {% for experience in experience_list %}
                         <article class="experience-card">
+                            {% if experience.title == 'Web Development Intern' %}
+                                <span class="experience-category">Lorem Ipsum</span>
+                                <h2>Lorem Ipsum Experience</h2>
+                                <p class="experience-description">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc tempor turpis vel mollis posuere. Ut sed maximus nisl, a tincidunt dui. Fusce luctus lorem eu eleifend ultricies. Donec eget aliquam tortor. Phasellus vel ligula id ligula molestie fringilla nec eu lectus. Mauris ut arcu ac nisl tempus posuere non mollis massa.
+                                </p>
+                            {% else %}
                             <span class="experience-category">
                                 {{ experience.get_category_display }}
                             </span>
@@ -21,6 +28,7 @@
                             <p class="experience-description">
                                 {{ experience.description }}
                             </p>
+                            {% endif %}
 
                             {% if experience.is_ongoing %}
                                 <p class="experience-status">Ongoing</p>

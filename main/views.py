@@ -81,6 +81,7 @@ def show_main(request):
     last_login = request.COOKIES.get('last_login', 'Belum ada sesi login / Cookie tidak ditemukan')
     context = {
         "name": "Forza",
+        "full_name": "Forza Derian",
         "npm": "2506596041",
         "study_program": "S1 Information Systems",
         "bio": (

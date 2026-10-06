@@ -53,27 +53,27 @@
                                     {% if can_edit %}
                                         <a data-action="edit" class="button">Edit</a>
                                     {% endif %}
+                                    {% if user.is_authenticated %}
+                                        <form method="post" data-action="star" class="star-form">
+                                            {% csrf_token %}
+                                            <button type="submit" class="button button-star">
+                                                <span aria-hidden="true">★</span>
+                                                <span data-field="star-label"></span>
+                                                <span class="star-count" data-field="star-count"></span>
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <p class="experience-status">
+                                            <span aria-hidden="true">★</span>
+                                            <span data-field="star-count"></span> star
+                                            · <a href="{% url 'main:login' %}">Login untuk memberi star</a>
+                                        </p>
+                                    {% endif %}
                                     {% if can_delete %}
                                         <button data-action="delete" type="button" class="button button-danger"
                                                 popovertarget="delete-education-modal">Hapus</button>
                                     {% endif %}
                                 </div>
-                                {% if user.is_authenticated %}
-                                    <form method="post" data-action="star" class="star-form">
-                                        {% csrf_token %}
-                                        <button type="submit" class="button button-star">
-                                            <span aria-hidden="true">★</span>
-                                            <span data-field="star-label"></span>
-                                            <span class="star-count" data-field="star-count"></span>
-                                        </button>
-                                    </form>
-                                {% else %}
-                                    <p class="experience-status">
-                                        <span aria-hidden="true">★</span>
-                                        <span data-field="star-count"></span> star
-                                        · <a href="{% url 'main:login' %}">Login untuk memberi star</a>
-                                    </p>
-                                {% endif %}
                             </div>
                         </article>
                 </template>
