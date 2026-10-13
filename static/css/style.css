@@ -17,7 +17,8 @@
 
 body {
     min-height: 100vh;
-    font-family: "Google Sans", sans-serif;
+    font-family: "JetBrains Mono", monospace;
+    font-optical-sizing: auto;
     color: var(--ink);
     background-color: var(--paper);
     line-height: 1.6;
@@ -26,7 +27,7 @@ body {
 h1,
 h2,
 .brand {
-    font-family: "Google Sans", sans-serif;
+    font-family: "JetBrains Mono", monospace;
 }
 
 .container {
@@ -79,16 +80,18 @@ h2,
 }
 
 .hero {
+    --profile-gap: 1rem;
     padding: 4.5rem 0 5rem;
 }
 
 .hero-grid {
     display: grid;
     grid-template-columns: 1.3fr 1fr;
+    grid-template-rows: min-content 1fr;
     grid-template-areas:
         "identity photo"
         "details  photo";
-    gap: 1.5rem 3rem;
+    gap: var(--profile-gap) 3rem;
 }
 
 .hero-identity {
@@ -97,6 +100,10 @@ h2,
 
 .hero-details {
     grid-area: details;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: var(--profile-gap);
 }
 
 .hero-kicker {
@@ -105,7 +112,7 @@ h2,
     text-transform: uppercase;
     color: var(--accent-dark);
     font-weight: 700;
-    margin-bottom: 0.75rem;
+    margin-bottom: var(--profile-gap);
 }
 
 .hero-identity h1 {
@@ -116,13 +123,14 @@ h2,
 .bio {
     color: var(--text-muted);
     max-width: 480px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0;
 }
 
 .meta-list {
     display: flex;
-    gap: 2rem;
-    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    margin-bottom: 0;
 }
 
 .meta-row dt {
@@ -310,10 +318,11 @@ h2,
 @media (max-width: 600px) {
     .hero-grid {
         grid-template-columns: 1fr;
+        grid-template-rows: none;
         grid-template-areas:
             "identity"
-            "photo"
-            "details";
+            "details"
+            "photo";
     }
 
     .hero-photo {
@@ -612,7 +621,7 @@ h2,
 
 .project-delete-modal__content h2 {
     margin: 0 0 0.75rem;
-    font-family: "Google Sans", sans-serif;
+    font-family: "JetBrains Mono", monospace;
     font-size: 1.5rem;
 }
 
@@ -727,7 +736,7 @@ h2,
 
 .project-form-modal__content h2 {
     margin: 0 2.5rem 1.25rem 0;
-    font-family: "Google Sans", sans-serif;
+    font-family: "JetBrains Mono", monospace;
     font-size: 1.5rem;
 }
 
@@ -853,7 +862,7 @@ h2,
     font-size: 1rem;
     font-weight: 700;
     margin-bottom: 0.15rem;
-    font-family: "Google Sans", sans-serif;
+    font-family: "JetBrains Mono", monospace;
 }
 
 .toast-message {
