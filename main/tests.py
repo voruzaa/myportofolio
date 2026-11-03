@@ -211,7 +211,7 @@ class EducationTest(TestCase):
                 self.assertEqual(b'data-action="delete"' in response.content, can_delete)
                 self.assertEqual(b'id="delete-education-form"' in response.content, can_delete)
                 self.assertEqual(b'data-action="star"' in response.content, user is not None)
-                self.assertEqual(b'id="education-form"' in response.content, can_delete)
+                self.assertEqual(b'id="education-form"' in response.content, can_edit)
                 self.assertContains(response, 'id="education-search-input"')
 
     def test_education_search_filters_institution_case_insensitively(self):

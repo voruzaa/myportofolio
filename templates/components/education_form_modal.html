@@ -7,8 +7,8 @@
         <button type="button" class="project-form-modal__close"
                 popovertarget="add-education-modal" popovertargetaction="hide"
                 aria-label="Tutup form tambah pendidikan">&times;</button>
-        <h2 id="add-education-modal-title">Tambah Education</h2>
-        <form id="education-form" method="post" action="{% url 'main:create_education_ajax' %}"
+        <h2 id="add-education-modal-title">{% if can_create %}Tambah{% else %}Edit{% endif %} Education</h2>
+        <form id="education-form" method="post" action="{% url 'api:education-list' %}"
               class="project-form">
             {% csrf_token %}
             <p id="education-form-errors" class="form-error" role="alert" hidden></p>
@@ -21,7 +21,7 @@
             <div class="project-form-modal__actions">
                 <button type="button" class="button button-secondary"
                         popovertarget="add-education-modal" popovertargetaction="hide">Batal</button>
-                <button type="submit" class="button">Tambah Education</button>
+                <button type="submit" class="button">{% if can_create %}Tambah Education{% else %}Simpan Perubahan{% endif %}</button>
             </div>
         </form>
     </div>
