@@ -9,18 +9,15 @@
 {% block content %}
     <main>
         <section class="experience-section" id="education"
-                 data-endpoint="{% url 'api:education-list' %}"
-                 data-detail-url="{% url 'api:education-detail' '00000000-0000-0000-0000-000000000000' %}"
-                 data-edit-url="{% url 'main:update_education' '00000000-0000-0000-0000-000000000000' %}"
-                 data-delete-url="{% url 'api:education-detail' '00000000-0000-0000-0000-000000000000' %}"
-                 data-star-url="{% url 'api:education-star' '00000000-0000-0000-0000-000000000000' %}">
-            {% csrf_token %}
+                 data-api-list-url="{% url 'api:education_list' %}"
+                 data-api-detail-url="{% url 'api:education_detail' '00000000-0000-0000-0000-000000000000' %}"
+                 data-api-star-url="{% url 'api:education_star' '00000000-0000-0000-0000-000000000000' %}">
             <div class="container">
                 <p class="section-kicker">Academic background</p>
                 <div class="project-header">
                     <h1>Education</h1>
                     {% if can_create %}
-                        <button type="button" popovertarget="add-education-modal" data-action="create"
+                        <button type="button" popovertarget="add-education-modal"
                                 class="button project-add-button">
                             <span aria-hidden="true">+</span>
                             Tambah Education
@@ -53,7 +50,8 @@
                             <div class="project-card-actions">
                                 <div class="project-actions">
                                     {% if can_edit %}
-                                        <a data-action="edit" class="button">Edit</a>
+                                        <button data-action="edit" type="button" class="button"
+                                                popovertarget="edit-education-modal">Edit</button>
                                     {% endif %}
                                     {% if user.is_authenticated %}
                                         <button type="button" data-action="star" class="button button-star">
@@ -76,12 +74,16 @@
                             </div>
                         </article>
                 </template>
-                {% if can_edit %}
+                {% if can_create %}
                     {% include 'components/education_form_modal.html' %}
+                {% endif %}
+                {% if can_edit %}
+                    {% include 'components/education_edit_modal.html' %}
                 {% endif %}
                 {% if can_delete %}
                     {% include 'components/education_delete_modal.html' %}
                 {% endif %}
+                {% csrf_token %}
                 <noscript><p class="empty-state">Aktifkan JavaScript untuk memuat data pendidikan.</p></noscript>
             </div>
         </section>
