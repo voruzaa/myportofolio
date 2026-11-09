@@ -79,4 +79,24 @@ AI DISCLOSURE: Tugas ini menggunakan bantuan Codex untuk mengecek kesesuaian den
 DOKUMENTASI: Pada Tugas 5, halaman Education memuat data beserta informasi star melalui AJAX, dilengkapi pencarian berdasarkan institusi dengan debouncing 300 ms serta tampilan loading, kosong, dan error. Superuser dapat menambahkan pendidikan melalui modal menggunakan AJAX tanpa reload halaman, dengan validasi ModelForm, proteksi CSRF, dan notifikasi toast. Perlindungan XSS diterapkan melalui textContent di sisi JavaScript dan strip_tags pada field teks di sisi server.
 
 
+### Tugas 6
+
+AI DISCLOSURE: Tugas ini menggunakan bantuan Claude dan Gemini untuk membantu pengecekan kesesuaian checklist penugasan, perancangan arsitektur permission class berbasis peran pada DRF, penambahan validasi tanggal pada serializer, implementasi endpoint API berbasis fungsi, dan penyusunan test suite APITestCase.
+
+1. Jelaskan apa yang dimaksud dengan REST dan mengapa mengembalikan JSON saja belum cukup untuk menyebut sebuah API sebagai RESTful! Jelaskan pula perbedaan PUT dan PATCH beserta contoh kapan masing-masing sebaiknya digunakan!
+   Jawaban: REST adalah gaya arsitektur sistem web berbasis standar seperti resource-based URI, statelessness, dan HTTP verbs, sehingga mengembalikan JSON saja belum cukup tanpa mematuhi prinsip-prinsip tersebut. PUT digunakan untuk memperbarui seluruh data resource secara utuh (misalnya form edit profil pendidikan lengkap), sedangkan PATCH digunakan untuk memperbarui sebagian field saja tanpa menimpa data lainnya (misalnya hanya mengubah tanggal selesai).
+
+2. Jelaskan peran serializer pada Django REST Framework! Apa keuntungannya dibandingkan merakit dictionary secara manual dengan JsonResponse seperti pada Tutorial 05?
+   Jawaban: Serializer bertindak sebagai jembatan untuk mengubah instance model menjadi format JSON (serialisasi) sekaligus memvalidasi data masukan dari klien sebelum disimpan ke database (deserialisasi). Keuntungannya adalah menyediakan validasi tipe data otomatis, sanitasi teks terpusat, dan struktur pesan error yang konsisten tanpa perlu menulis percabangan dictionary manual.
+
+3. Jelaskan perbedaan autentikasi dan otorisasi pada Django REST Framework! Mengapa hak akses harus diperiksa dengan permission class di server, bukan hanya dengan menyembunyikan tombol di template?
+   Jawaban: Autentikasi memverifikasi identitas pengguna yang sedang mengakses sistem, sedangkan otorisasi menentukan tindakan atau hak akses apa saja yang diizinkan untuk pengguna tersebut. Pemeriksaan hak akses wajib dilakukan di server melalui permission class karena elemen antarmuka di template dapat dengan mudah di-bypass menggunakan HTTP request langsung seperti cURL atau Postman.
+
+4. Jelaskan mengapa permintaan yang mengubah data tetap memerlukan token CSRF ketika API memakai SessionAuthentication! Mengapa test yang memakai force_authenticate tidak cukup untuk membuktikan bahwa perlindungan CSRF berjalan?
+   Jawaban: Permintaan pengubah data tetap memerlukan token CSRF karena SessionAuthentication memanfaatkan cookie sesi browser yang rentan terhadap pemalsuan request dari situs pihak ketiga (CSRF). Pengujian dengan force_authenticate tidak cukup untuk membuktikan proteksi ini karena fungsi tersebut sengaja melewati seluruh pipeline autentikasi dan middleware CSRF bawaan Django.
+
+DOKUMENTASI: Pada Tugas 6, diimplementasikan REST API menggunakan Django REST Framework (DRF) untuk entitas Education dan Project. Dibuat ModelSerializer dengan field eksplisit, field read-only untuk informasi star (star_count dan is_starred), sanitasi teks menggunakan strip_tags pada method validate_<field>(), serta validasi rentang tanggal. Hak akses dikelola secara modular pada permission class (IsPortfolioOwnerOrEditorOrReadOnly dan IsPortfolioOwnerOrReadOnly) yang membedakan hak akses untuk 4 peran (Pengunjung, Pengguna Biasa, Editor, dan Pemilik Portofolio/Superuser). Endpoint API berbasis fungsi dibuat dengan @api_view dan SessionAuthentication di bawah prefix /api/v1/ dengan parameter query untuk pencarian, didukung status HTTP yang semantik (200, 201, 204, 400, 403, 404). Halaman frontend diintegrasikan dengan Fetch API untuk operasi CRUD dan star tanpa reload halaman, dilengkapi notifikasi toast, perlindungan XSS, dan token CSRF. Seluruh fungsionalitas diuji secara komprehensif menggunakan APITestCase sebanyak 32 test case baru (total 57 test lulus tanpa error).
+
+
+
 

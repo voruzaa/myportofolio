@@ -9,10 +9,9 @@
 {% block content %}
     <main>
         <section class="experience-section" id="education"
-                 data-endpoint="{% url 'main:get_education_json' %}"
-                 data-edit-url="{% url 'main:update_education' '00000000-0000-0000-0000-000000000000' %}"
-                 data-delete-url="{% url 'main:delete_education' '00000000-0000-0000-0000-000000000000' %}"
-                 data-star-url="{% url 'main:toggle_education_star' '00000000-0000-0000-0000-000000000000' %}">
+                 data-api-list-url="{% url 'api:education_list' %}"
+                 data-api-detail-url="{% url 'api:education_detail' '00000000-0000-0000-0000-000000000000' %}"
+                 data-api-star-url="{% url 'api:education_star' '00000000-0000-0000-0000-000000000000' %}">
             <div class="container">
                 <p class="section-kicker">Academic background</p>
                 <div class="project-header">
@@ -51,17 +50,15 @@
                             <div class="project-card-actions">
                                 <div class="project-actions">
                                     {% if can_edit %}
-                                        <a data-action="edit" class="button">Edit</a>
+                                        <button data-action="edit" type="button" class="button"
+                                                popovertarget="edit-education-modal">Edit</button>
                                     {% endif %}
                                     {% if user.is_authenticated %}
-                                        <form method="post" data-action="star" class="star-form">
-                                            {% csrf_token %}
-                                            <button type="submit" class="button button-star">
-                                                <span aria-hidden="true">★</span>
-                                                <span data-field="star-label"></span>
-                                                <span class="star-count" data-field="star-count"></span>
-                                            </button>
-                                        </form>
+                                        <button type="button" data-action="star" class="button button-star">
+                                            <span aria-hidden="true">★</span>
+                                            <span data-field="star-label"></span>
+                                            <span class="star-count" data-field="star-count"></span>
+                                        </button>
                                     {% else %}
                                         <p class="experience-status">
                                             <span aria-hidden="true">★</span>
@@ -80,9 +77,13 @@
                 {% if can_create %}
                     {% include 'components/education_form_modal.html' %}
                 {% endif %}
+                {% if can_edit %}
+                    {% include 'components/education_edit_modal.html' %}
+                {% endif %}
                 {% if can_delete %}
                     {% include 'components/education_delete_modal.html' %}
                 {% endif %}
+                {% csrf_token %}
                 <noscript><p class="empty-state">Aktifkan JavaScript untuk memuat data pendidikan.</p></noscript>
             </div>
         </section>
