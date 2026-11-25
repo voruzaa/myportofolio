@@ -1,7 +1,8 @@
+from django.contrib.auth.models import User
+from django.db.models import Count, Prefetch
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -10,13 +11,28 @@ from main.permissions import IsPortfolioOwnerOrEditorOrReadOnly, IsPortfolioOwne
 from main.serializers import EducationSerializer, ProjectSerializer
 
 
+def _list_with_star_data(queryset, user):
+    """Annotate star counts and prefetch only the current user's stars."""
+    queryset = queryset.annotate(star_count_value=Count("starred_by", distinct=True))
+    if user is not None and user.is_authenticated:
+        queryset = queryset.prefetch_related(
+            Prefetch("starred_by", queryset=User.objects.filter(pk=user.pk), to_attr="_starred_users")
+        )
+    return queryset
+
+
+def _is_starred(obj, user):
+    if user is None or not user.is_authenticated:
+        return False
+    return bool(getattr(obj, "_starred_users", None))
+
+
 # ==============================================================================
 # Education API Endpoints (Individual Assignment 6)
 # ==============================================================================
 
 
 @api_view(["GET", "POST"])
-@authentication_classes([SessionAuthentication])
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def education_list(request):
     """
@@ -25,7 +41,9 @@ def education_list(request):
     """
     if request.method == "GET":
         institution_query = request.query_params.get("institution", "").strip()
-        education_list = Education.objects.prefetch_related("starred_by").order_by("-started_at")
+        education_list = _list_with_star_data(
+            Education.objects.order_by("-started_at"), request.user
+        )
         if institution_query:
             education_list = education_list.filter(institution__icontains=institution_query)
         serializer = EducationSerializer(education_list, many=True, context={"request": request})
@@ -42,7 +60,6 @@ def education_list(request):
 
 
 @api_view(["GET", "PUT", "PATCH", "DELETE"])
-@authentication_classes([SessionAuthentication])
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def education_detail(request, education_id):
     """
@@ -72,7 +89,6 @@ def education_detail(request, education_id):
 
 
 @api_view(["POST"])
-@authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def education_star(request, education_id):
     """
@@ -84,6 +100,7 @@ def education_star(request, education_id):
         education.starred_by.remove(request.user)
     else:
         education.starred_by.add(request.user)
+    education = _list_with_star_data(Education.objects.filter(pk=education.pk), request.user).get()
     return Response(EducationSerializer(education, context={"request": request}).data)
 
 
@@ -93,7 +110,6 @@ def education_star(request, education_id):
 
 
 @api_view(["GET", "POST"])
-@authentication_classes([SessionAuthentication])
 @permission_classes([IsPortfolioOwnerOrReadOnly])
 def project_list(request):
     """
@@ -102,7 +118,9 @@ def project_list(request):
     """
     if request.method == "GET":
         title_query = request.query_params.get("title", "").strip()
-        projects = Project.objects.prefetch_related("starred_by").order_by("-id")
+        projects = _list_with_star_data(
+            Project.objects.order_by("-id"), request.user
+        )
         if title_query:
             projects = projects.filter(title__icontains=title_query)
         serializer = ProjectSerializer(projects, many=True, context={"request": request})
@@ -119,7 +137,6 @@ def project_list(request):
 
 
 @api_view(["GET", "PUT", "PATCH", "DELETE"])
-@authentication_classes([SessionAuthentication])
 @permission_classes([IsPortfolioOwnerOrReadOnly])
 def project_detail(request, project_id):
     """
@@ -149,7 +166,6 @@ def project_detail(request, project_id):
 
 
 @api_view(["POST"])
-@authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def project_star(request, project_id):
     """
@@ -161,4 +177,14 @@ def project_star(request, project_id):
         project.starred_by.remove(request.user)
     else:
         project.starred_by.add(request.user)
+    project = _list_with_star_data(Project.objects.filter(pk=project.pk), request.user).get()
     return Response(ProjectSerializer(project, context={"request": request}).data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def api_logout(request):
+    """Revoke the token used for the current request."""
+    if request.auth is not None:
+        request.auth.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

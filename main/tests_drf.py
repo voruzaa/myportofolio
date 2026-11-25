@@ -59,7 +59,7 @@ class EducationAPIListTest(EducationAPITestBase):
 
     def test_visitor_cannot_create(self):
         response = self.visitor_client.post(self.list_url, VALID_PAYLOAD, format="json")
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Education.objects.count(), 1)
 
     def test_regular_user_cannot_create(self):
@@ -121,7 +121,7 @@ class EducationAPIDetailTest(EducationAPITestBase):
         response = self.visitor_client.patch(
             self.detail_url, {"degree": "S1 Ilmu Komputer"}, format="json"
         )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.existing_education.refresh_from_db()
         self.assertEqual(self.existing_education.degree, "S1 Teknik Informatika")
 
@@ -133,7 +133,7 @@ class EducationAPIDetailTest(EducationAPITestBase):
             "started_at": "2020-08-01",
         }
         response = self.visitor_client.put(self.detail_url, payload, format="json")
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.existing_education.refresh_from_db()
         self.assertEqual(self.existing_education.degree, "S1 Teknik Informatika")
 
@@ -192,7 +192,7 @@ class EducationAPIDetailTest(EducationAPITestBase):
 
     def test_visitor_cannot_delete(self):
         response = self.visitor_client.delete(self.detail_url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Education.objects.count(), 1)
 
     def test_regular_user_cannot_delete(self):
@@ -300,7 +300,7 @@ class ProjectAPITest(APITestCase):
             "tech_stack": "Python",
         }
         res_visitor = self.visitor_client.post(self.list_url, payload, format="json")
-        self.assertEqual(res_visitor.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(res_visitor.status_code, status.HTTP_401_UNAUTHORIZED)
         res_regular = self.regular_client.post(self.list_url, payload, format="json")
         self.assertEqual(res_regular.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Project.objects.count(), 1)

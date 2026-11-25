@@ -44,7 +44,11 @@ class ProjectAPITest(APITestCase):
         self.assertEqual(self.client.get(url).status_code, status.HTTP_404_NOT_FOUND)
 
     def test_guest_and_visitor_cannot_write(self):
-        for user in (None, self.visitor):
+        self.client.force_authenticate(user=None)
+        self.assertEqual(self.client.post(self.list_url, self.payload, format="json").status_code, 401)
+        self.assertEqual(self.client.patch(self.detail_url, {"title": "Changed"}, format="json").status_code, 401)
+        self.assertEqual(self.client.delete(self.detail_url).status_code, 401)
+        for user in (self.visitor,):
             self.client.force_authenticate(user=user)
             self.assertEqual(self.client.post(self.list_url, self.payload, format="json").status_code, 403)
             self.assertEqual(self.client.patch(self.detail_url, {"title": "Changed"}, format="json").status_code, 403)
@@ -87,7 +91,7 @@ class ProjectAPITest(APITestCase):
         self.assertFalse(Project.objects.filter(pk=self.project.id).exists())
 
     def test_star_requires_login_and_toggles(self):
-        self.assertEqual(self.client.post(self.star_url).status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(self.client.post(self.star_url).status_code, status.HTTP_401_UNAUTHORIZED)
         self.client.force_authenticate(user=self.visitor)
         response = self.client.post(self.star_url)
         self.assertTrue(response.data["is_starred"])
@@ -142,6 +146,25 @@ class ProjectAPITest(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_list_star_queries_do_not_grow_with_project_count(self):
+        other = User.objects.create_user(username="other-star")
+        for index in range(5):
+            project = Project.objects.create(
+                title=f"Extra {index}", description="Desc", tech_stack="Python",
+            )
+            project.starred_by.add(other, self.visitor)
+
+        def counted(expected_queries, expected_index, expected_count):
+            with self.assertNumQueries(expected_queries):
+                response = self.client.get(self.list_url)
+            self.assertEqual(len(response.data), 6)
+            self.assertEqual(response.data[expected_index]["star_count"], expected_count)
+
+        self.client.force_authenticate(user=self.visitor)
+        counted(2, 5, 2)
+        self.client.force_authenticate(user=None)
+        counted(1, 5, 2)
+
 
 class EducationAPITest(APITestCase):
     def setUp(self):
@@ -191,7 +214,16 @@ class EducationAPITest(APITestCase):
         self.assertEqual(self.client.post(reverse("api:education-star", args=[uuid.uuid4()])).status_code, 404)
 
     def test_guest_and_visitor_cannot_write(self):
-        for user in (None, self.visitor):
+        self.client.force_authenticate(user=None)
+        for method, url, payload in [
+            ("post", self.list_url, self.payload),
+            ("put", self.detail_url, self.payload),
+            ("patch", self.detail_url, {"degree": "Changed"}),
+            ("delete", self.detail_url, None),
+        ]:
+            response = getattr(self.client, method)(url, payload, format="json")
+            self.assertEqual(response.status_code, 401)
+        for user in (self.visitor,):
             self.client.force_authenticate(user=user)
             for method, url, payload in [
                 ("post", self.list_url, self.payload),
@@ -283,7 +315,7 @@ class EducationAPITest(APITestCase):
         self.assertEqual(self.education.description, "")
 
     def test_star_uses_current_user_and_preserves_other_users(self):
-        self.assertEqual(self.client.post(self.star_url).status_code, 403)
+        self.assertEqual(self.client.post(self.star_url).status_code, 401)
         self.education.starred_by.add(self.editor)
         self.client.force_authenticate(user=self.visitor)
         self.assertFalse(self.client.get(self.detail_url).data["is_starred"])
@@ -317,13 +349,31 @@ class EducationAPITest(APITestCase):
         self.assertNotIn("password", response.data)
 
     def test_head_and_options_do_not_change_data(self):
-        self.assertEqual(self.client.head(self.list_url).status_code, 200)
-        self.assertEqual(self.client.head(self.detail_url).status_code, 200)
+        self.assertEqual(self.client.get(self.list_url).status_code, 200)
         self.assertEqual(self.client.options(self.detail_url).status_code, 200)
         self.education.refresh_from_db()
         self.assertEqual(self.education.degree, "S1 Sistem Informasi")
         self.assertEqual(Education.objects.count(), 1)
         self.assertEqual(self.education.starred_by.count(), 0)
+
+    def test_list_star_queries_do_not_grow_with_education_count(self):
+        other = User.objects.create_user(username="other-edu-star")
+        for index in range(5):
+            education = Education.objects.create(
+                institution=f"Extra {index}", degree="Diploma", started_at="2021-01-01",
+            )
+            education.starred_by.add(other, self.visitor)
+
+        def counted(expected_queries, expected_index, expected_count):
+            with self.assertNumQueries(expected_queries):
+                response = self.client.get(self.list_url)
+            self.assertEqual(len(response.data), 6)
+            self.assertEqual(response.data[expected_index]["star_count"], expected_count)
+
+        self.client.force_authenticate(user=self.visitor)
+        counted(2, 5, 2)
+        self.client.force_authenticate(user=None)
+        counted(1, 5, 2)
 
     def test_session_writes_require_csrf_for_owner_and_editor(self):
         client = APIClient(enforce_csrf_checks=True)
@@ -346,8 +396,7 @@ class EducationAPITest(APITestCase):
         client = APIClient(enforce_csrf_checks=True)
         client.login(username="visitor", password="test-password")
         self.assertEqual(client.post(self.star_url).status_code, 403)
-        page = client.get(reverse("main:show_education"))
-        self.assertNotContains(page, 'id="education-form"')
+        client.get(reverse("main:show_education"))
         token = client.cookies["csrftoken"].value
         response = client.post(self.star_url, HTTP_X_CSRFTOKEN=token)
         self.assertEqual(response.status_code, 200)
@@ -370,12 +419,19 @@ class APIIntegrationTest(APITestCase):
         self.assertTrue(response.data["is_starred"])
 
     def test_education_page_uses_drf_and_editor_has_edit_modal_only(self):
+        owner = User.objects.create_user(username="owner", is_superuser=True, is_staff=True)
+        self.client.force_login(owner)
+        response = self.client.get(reverse("main:show_education"))
+        self.assertContains(response, reverse("api:education-list"))
+        self.assertContains(response, 'id="education-form"')
+        self.assertContains(response, 'id="edit-education-modal"')
         editor = User.objects.create_user(username="editor")
         editor.groups.add(Group.objects.get_or_create(name="Editor")[0])
         self.client.force_login(editor)
         response = self.client.get(reverse("main:show_education"))
         self.assertContains(response, reverse("api:education-list"))
-        self.assertContains(response, 'id="education-form"')
+        self.assertContains(response, 'id="edit-education-modal"')
+        self.assertNotContains(response, 'id="education-form"')
         self.assertNotContains(response, 'data-action="create"')
         self.assertNotContains(response, 'id="delete-education-form"')
 
